@@ -3,22 +3,35 @@ import { IFCUService } from './ifcu.service';
 
 @Controller('ifcu-remote')
 export class IFCUController {
-  constructor(private readonly IFCUService: IFCUService) {}
+  constructor(private readonly iFCUService: IFCUService) {}
 
-  @Post('get-mode')
-  async getMode() {
-    return await this.IFCUService.getMode();
+  @Post('status')
+  async status() {
+    // return await this.iFCUService.status();
   }
 
-  @Post('change-mode')
-  async changeMode(@Req() req) {
-    const { mode } = req.body;
-    return await this.IFCUService.setMode(mode);
+  @Post('on')
+  async on() {
+    // return await this.iFCUService.getMode();
   }
 
-  @Post('manual-publish')
-  async manualPublish(@Req() req) {
-    const { warningCode } = req.body;
-    return await this.IFCUService.manualMode(warningCode);
+  @Post('off')
+  async off() {
+    // return await this.iFCUService.getMode();
+  }
+
+  @Post('mode')
+  async mode() {
+    // return await this.iFCUService.getMode();
+  }
+
+  @Post('fan-speed')
+  async fanSpeed() {
+    // return await this.iFCUService.getMode();
+  }
+
+  @Post('set-point-temp')
+  async setPointTemp() {
+    // return await this.iFCUService.getMode();
   }
 }

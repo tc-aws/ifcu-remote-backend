@@ -7,10 +7,9 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { GuardsModule } from './guards/guards.module';
 import { ProjectModule } from './project/project.module';
-import { ScheduledTasksService } from './scheduled-tasks/scheduled-tasks.service';
 import { UtilsModule } from './utils/utils.module';
-import { WarningSystemModule } from './warning-system/warning-system.module';
 import { CrawlerModule } from './crawler/crawler.module';
+import { IFCUModule } from './ifcu/ifcu.module';
 
 @Module({
   imports: [
@@ -20,15 +19,15 @@ import { CrawlerModule } from './crawler/crawler.module';
       database: 'database/database.sqlite',
       autoLoadEntities: true,
     }),
-    WarningSystemModule,
     AuthModule,
     UtilsModule,
     GuardsModule,
     AdminModule,
     ProjectModule,
     CrawlerModule,
+    IFCUModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ScheduledTasksService],
+  providers: [AppService],
 })
 export class AppModule {}

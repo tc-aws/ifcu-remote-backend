@@ -1,0 +1,1 @@
+pm2 delete all && pm2 start npm --name "hsww-backend" -- run start:prod

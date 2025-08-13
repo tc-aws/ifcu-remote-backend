@@ -73,9 +73,8 @@ export class IFCUService {
     return null;
   }
 
-  async cmd(cmd?: IFCU_CMD) {
-    // const topic = `rgt/${imei}/in`;
-    const topic = `rgtin`;
+  async cmd(imei: string, cmd?: IFCU_CMD) {
+    const topic = `rgt/${imei}/in`;
     const idx = subsTopics.findIndex((e) => e.topic === topic);
 
     if (idx > -1) {

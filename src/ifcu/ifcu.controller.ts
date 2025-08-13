@@ -13,41 +13,43 @@ export class IFCUController {
   }
 
   @Post('on')
-  async on() {
-    return await this.iFCUService.cmd(IFCU_CMD.IFCU_ON);
+  async on(@Req() req) {
+    const { imei } = req.body;
+    return await this.iFCUService.cmd(imei, IFCU_CMD.IFCU_ON);
   }
 
   @Post('off')
-  async off() {
-    return await this.iFCUService.cmd(IFCU_CMD.IFCU_OFF);
+  async off(@Req() req) {
+    const { imei } = req.body;
+    return await this.iFCUService.cmd(imei, IFCU_CMD.IFCU_OFF);
   }
 
   @Post('mode')
   async mode(@Req() req) {
-    const { mode } = req.body;
+    const { imei, mode } = req.body;
     return await [
-      this.iFCUService.cmd(IFCU_CMD.IFCU_MODE_AUTO_COOL),
-      this.iFCUService.cmd(IFCU_CMD.IFCU_MODE_MANUAL_COOL),
-      this.iFCUService.cmd(IFCU_CMD.IFCU_MODE_FAN_ONLY),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_MODE_AUTO_COOL),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_MODE_MANUAL_COOL),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_MODE_FAN_ONLY),
     ][mode];
   }
 
   @Post('fan-speed')
   async fanSpeed(@Req() req) {
-    const { speed } = req.body;
+    const { imei, speed } = req.body;
     return await [
-      this.iFCUService.cmd(IFCU_CMD.IFCU_FAN_SPEED_LOW),
-      this.iFCUService.cmd(IFCU_CMD.IFCU_FAN_SPEED_MEDIUM),
-      this.iFCUService.cmd(IFCU_CMD.IFCU_FAN_SPEED_HIGH),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_FAN_SPEED_LOW),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_FAN_SPEED_MEDIUM),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_FAN_SPEED_HIGH),
     ][speed];
   }
 
-  @Post('set-point-temp')
-  async setPointTemp(@Req() req) {
-    const { action } = req.body;
+  @Post('set-temp')
+  async setTemp(@Req() req) {
+    const { imei, action } = req.body;
     return await [
-      this.iFCUService.cmd(IFCU_CMD.IFCU_ACTION_INCREASE_TEMP),
-      this.iFCUService.cmd(IFCU_CMD.IFCU_ACTION_DECREASE_TEMP),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_ACTION_INCREASE_TEMP),
+      this.iFCUService.cmd(imei, IFCU_CMD.IFCU_ACTION_DECREASE_TEMP),
     ][action];
   }
 }

@@ -5,7 +5,7 @@ const mqtt = require('mqtt');
 
 export interface SubsTopic {
   topic: string;
-  topicDevice: string;
+  topicToDevice: string;
   topicServer: string;
   devicePayload: any;
   lastConnTime?: string;
@@ -14,7 +14,7 @@ export interface SubsTopic {
 const subsTopics: SubsTopic[] = [
   {
     topic: 'rgt/861096060571706/in',
-    topicDevice: 'rgt/861096060571706/device',
+    topicToDevice: 'rgt/861096060571706/out',
     topicServer: 'rgt/861096060571706/server',
     devicePayload: {},
   },
@@ -67,18 +67,36 @@ export class IFCUService {
     const idx = subsTopics.findIndex((e) => e.topic === topic);
 
     if (idx > -1) {
-      return subsTopics[-1];
+      return subsTopics[idx];
     }
 
     return null;
   }
 
-  async cmd(imei: string, cmd?: IFCU_CMD) {
+  async cmd(imei: string, cmd: IFCU_CMD) {
     const topic = `rgt/${imei}/in`;
     const idx = subsTopics.findIndex((e) => e.topic === topic);
 
     if (idx > -1) {
-      return subsTopics[-1];
+      const subs = subsTopics[idx];
+      const cmdIdx = Object.keys(IFCU_CMD).findIndex((k) => k === cmd);
+      const msg = `[${cmdIdx}]`;
+      if (cmdIdx > -1) {
+        this.client.publish(
+          subs.topicToDevice,
+          msg,
+          {
+            qos: 2,
+          },
+          (err) => {
+            if (err) {
+              console.error('Failed to publish message:', err);
+            } else {
+              console.log(`Message "${msg}" published to topic "${topic}"`);
+            }
+          },
+        );
+      }
     }
 
     return null;

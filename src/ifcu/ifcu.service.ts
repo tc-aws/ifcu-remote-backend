@@ -6,7 +6,7 @@ const mqtt = require('mqtt');
 export interface SubsTopic {
   topic: string;
   topicToDevice: string;
-  topicServer: string;
+  topicToServer: string;
   devicePayload: any;
   lastConnTime?: string;
 }
@@ -15,12 +15,10 @@ const subsTopics: SubsTopic[] = [
   {
     topic: 'rgt/861096060571706/in',
     topicToDevice: 'rgt/861096060571706/out',
-    topicServer: 'rgt/861096060571706/server',
+    topicToServer: 'rgt/861096060571706/in',
     devicePayload: {},
   },
 ];
-
-const findTopic = () => {};
 
 @Injectable()
 export class IFCUService {

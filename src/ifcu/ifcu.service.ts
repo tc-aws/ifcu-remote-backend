@@ -1,31 +1,26 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { MESSAGE } from 'src/config/message.config';
+import { Injectable } from '@nestjs/common';
 import { MQTT_CONFIG } from 'src/config/mqtt.config';
-import { WeatherWarning } from 'src/database/database.entity';
-import { Repository } from 'typeorm';
-import {
-  ACTION_CODE,
-  DO_MAPPING,
-  SYSTEM_MODE,
-  WARNING_CODE,
-  WARNING_LEVEL,
-} from './ifcu.enums';
-import { sleep } from 'src/utils/utils';
+import { IFCU_CMD } from './ifcu.enums';
 const mqtt = require('mqtt');
 
-interface Subscription {
+export interface SubsTopic {
   topic: string;
+  topicDevice: string;
+  topicServer: string;
   devicePayload: any;
   lastConnTime?: string;
 }
 
-const subscriptions: Subscription[] = [
+const subsTopics: SubsTopic[] = [
   {
     topic: 'rgt/861096060571706/in',
+    topicDevice: 'rgt/861096060571706/device',
+    topicServer: 'rgt/861096060571706/server',
     devicePayload: {},
   },
 ];
+
+const findTopic = () => {};
 
 @Injectable()
 export class IFCUService {
@@ -44,11 +39,11 @@ export class IFCUService {
     this.client.on('connect', () => {
       console.log('Connected to MQTT broker');
 
-      const topics = subscriptions.map((e) => e.topic);
+      const topics = subsTopics.map((e) => e.topic);
 
       this.client.subscribe(topics, (err) => {
         if (err) {
-          console.error('Subscription error:', err);
+          console.error('SubsTopic error:', err);
           return;
         }
         console.log('Subscribed to topics:', topics);
@@ -56,14 +51,37 @@ export class IFCUService {
     });
 
     this.client.on('message', (topic: string, message: string) => {
-      const idx = subscriptions.findIndex((e) => e.topic === topic);
+      const idx = subsTopics.findIndex((e) => e.topic === topic);
       if (idx > -1) {
-        subscriptions[idx].devicePayload = JSON.parse(message.toString());
+        subsTopics[idx].devicePayload = JSON.parse(message.toString());
       }
 
-      console.log(subscriptions);
+      console.log(subsTopics);
     });
   }
 
-  async status(imei: string) {}
+  async handlePublish() {}
+
+  async status(imei: string) {
+    const topic = `rgt/${imei}/in`;
+    const idx = subsTopics.findIndex((e) => e.topic === topic);
+
+    if (idx > -1) {
+      return subsTopics[-1];
+    }
+
+    return null;
+  }
+
+  async cmd(cmd?: IFCU_CMD) {
+    // const topic = `rgt/${imei}/in`;
+    const topic = `rgtin`;
+    const idx = subsTopics.findIndex((e) => e.topic === topic);
+
+    if (idx > -1) {
+      return subsTopics[-1];
+    }
+
+    return null;
+  }
 }
